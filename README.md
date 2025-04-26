@@ -1,5 +1,5 @@
-# EGM722Project
-Repository for EGM722 Assignment Project
+# EGM722Project - M20 Lighting Column & Drainage Assets
+
 
 ## 1. Getting started
 
