@@ -1,4 +1,5 @@
 # Import required packages
+import os
 import pandas as pd               # Used for data handling
 import geopandas as gpd           # Core for spatial data operations
 import matplotlib.pyplot as plt   # For creating the bar chart
@@ -77,7 +78,7 @@ def create_bar_chart(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
     plt.tight_layout()
     plt.show()
 
-# Main Execution of code
+# To run the code
 if __name__ == "__main__":
     # Load and prepare data
     raw_data = load_geospatial_data()
@@ -350,3 +351,61 @@ if __name__ == "__main__":
     m.save("M20_Lighting_Columns_and_Drainage_Assets.html")
     import webbrowser
     webbrowser.open("M20_Lighting_Columns_and_Drainage_Assets.html")
+
+
+    def create_savings_table(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
+        """Generates the Lighting Column Upgrade Projected Savings table."""
+        # Constants for savings calculation
+        SAVINGS_PER_LAMP_PER_HOUR = 0.15  # cents
+        HOURS_PER_DAY = 8
+        DAYS_PER_YEAR = 365
+
+        # Process data and calculate savings
+        junction_counts = lighting_data.groupby('Junction').agg(
+            Total_Lamps=('Unique_Ass', 'count'),
+            Lamps_to_Change=('ScheduledF', lambda x: (x == 'Yes').sum())
+        ).reset_index().sort_values('Lamps_to_Change', ascending=False)
+
+        # Calculate annual savings in euros
+        junction_counts['Annual_Savings'] = (
+                junction_counts['Lamps_to_Change'] *
+                SAVINGS_PER_LAMP_PER_HOUR *
+                HOURS_PER_DAY *
+                DAYS_PER_YEAR
+        )
+
+        # Prepare table data
+        table_data = junction_counts[['Junction', 'Lamps_to_Change', 'Annual_Savings']].head(top_n)
+        table_data['Annual_Savings'] = table_data['Annual_Savings'].round(2).apply(lambda x: f'€{x:,.2f}')
+
+        # Create figure with just the table
+        fig, ax = plt.subplots(figsize=(12, 4))
+        ax.axis('off')  # Hide axes
+
+        # To create the table
+        table = plt.table(
+            cellText=table_data.values,
+            colLabels=['Junction', 'No. of Upgraded Lighting_Columns', 'Annual Savings'],
+            colColours=['#f0f0f0', '#f0f0f0', '#f0f0f0'],
+            cellLoc='center',
+            loc='center',
+            bbox=[0, 0, 1, 1]  # Fill available space
+        )
+
+        # Style table
+        table.auto_set_font_size(False)
+        table.set_fontsize(12)
+        table.scale(1.2, 1.2)
+
+        plt.show()
+
+
+    # Generate the table
+    create_savings_table(Lighting_Column)
+
+    # Create a CSV file of the Lighting_Point Data
+    pd.DataFrame(Lighting_Column.drop(columns='geometry')).to_csv(
+        r'C:\Users\royco\OneDrive - Ulster University\Documents\GitHub\EGM722Project\lighting_column_data.csv',
+        index=False
+    )
+    os.makedirs(r'C:\Users\royco\OneDrive - Ulster University\Documents\GitHub\EGM722Project', exist_ok=True)
