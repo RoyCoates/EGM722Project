@@ -39,45 +39,7 @@ def convert_to_wgs84(*gdfs: gpd.GeoDataFrame) -> tuple:
     """
     return [gdf.to_crs("EPSG:4326") for gdf in gdfs]
 
-# Create a Bar Chart from the Lighting Data showing the number of Lighting Columns Scheduled for Change at each Junction
 
-def create_bar_chart(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
-    """Generates a bar chart comparing total vs scheduled lighting column upgrades."""
-    junction_counts = lighting_data.groupby('Junction').agg(
-        Total_Lamps=('Unique_Ass', 'count'),
-        Lamps_to_Change=('ScheduledF', lambda x: (x == 'Yes').sum())
-    ).reset_index().sort_values('Lamps_to_Change', ascending=False)
-
-    plt.figure(figsize=(14, 7))
-    ax = plt.subplot(111)
-    colors = ['#ff7f0e', '#2ca02c']
-
-    junction_counts.head(top_n).plot(
-        x='Junction',
-        y=['Total_Lamps', 'Lamps_to_Change'],
-        kind='bar',
-        ax=ax,
-        color=colors,
-        edgecolor='black'
-    )
-
-    plt.title('No. of Lighting Columns Scheduled for Change at Each Junction',
-             fontsize=16, pad=20)
-    plt.xlabel('Junction ID', fontsize=12, labelpad=15)
-    plt.ylabel('Number of Lighting Columns', fontsize=12, labelpad=15)
-    plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.yticks(fontsize=10)
-    ax.spines[['top', 'right']].set_visible(False)
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
-
-    for container in ax.containers:
-        ax.bar_label(container, label_type='edge', padding=3,
-                    fontsize=10, color='black', fmt='%d')
-
-    plt.legend(['Total Lighting Columns', 'Scheduled for Upgrade'],
-              fontsize=12, bbox_to_anchor=(1, 1))
-    plt.tight_layout()
-    plt.show()
 
 # To run the code
 if __name__ == "__main__":
@@ -85,9 +47,6 @@ if __name__ == "__main__":
     raw_data = load_geospatial_data()
     wgs84_data = convert_to_wgs84(*raw_data)
     MarkerPosts, Filter_Drains, Gully, Junctions, Lighting_Column, Boundary = wgs84_data
-
-    # Create and display the bar chart
-    create_bar_chart(Lighting_Column)
 
     # Create base map that zooms into Junction 5 - The first junction that works are scheduled for.
     m = folium.Map(
@@ -158,7 +117,7 @@ if __name__ == "__main__":
                 icon_size=(0, 0)
             ).add_to(m)
 
-    # Add the Lighting Columns
+    # Add the Lighting Columns - The Lighting columns to be upgraded will be coloured green. The columns staying the same will be coloured orange.
     Lighting_Column.explore(
         m=m,
         column='ScheduledF',
@@ -273,7 +232,7 @@ if __name__ == "__main__":
     """
     m.get_root().html.add_child(folium.Element(legend_html))
 
-    # Add the labels for Lighting Columns
+    # Add the labels for Lighting Columns - The Labels will be colour coded too.
     for idx, row in Lighting_Column.iterrows():
         if not row.geometry.is_empty and pd.notnull(row['Unique_Ass']):
             label_color = 'green' if row['ScheduledF'] == 'Yes' else 'orange'
@@ -353,6 +312,49 @@ if __name__ == "__main__":
     import webbrowser
     webbrowser.open("M20_Lighting_Columns_and_Drainage_Assets.html")
 
+
+    # Create a Bar Chart from the Lighting Data showing the number of Lighting Columns Scheduled for Change at each Junction
+
+    def create_bar_chart(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
+        """Generates a bar chart comparing total vs scheduled lighting column upgrades."""
+        junction_counts = lighting_data.groupby('Junction').agg(
+            Total_Lamps=('Unique_Ass', 'count'),
+            Lamps_to_Change=('ScheduledF', lambda x: (x == 'Yes').sum())
+        ).reset_index().sort_values('Lamps_to_Change', ascending=False)
+
+        plt.figure(figsize=(14, 7))
+        ax = plt.subplot(111)
+        colors = ['#ff7f0e', '#2ca02c']
+
+        junction_counts.head(top_n).plot(
+            x='Junction',
+            y=['Total_Lamps', 'Lamps_to_Change'],
+            kind='bar',
+            ax=ax,
+            color=colors,
+            edgecolor='black'
+        )
+
+        plt.title('No. of Lighting Columns Scheduled for Change at Each Junction',
+                  fontsize=16, pad=20)
+        plt.xlabel('Junction ID', fontsize=12, labelpad=15)
+        plt.ylabel('Number of Lighting Columns', fontsize=12, labelpad=15)
+        plt.xticks(rotation=45, ha='right', fontsize=10)
+        plt.yticks(fontsize=10)
+        ax.spines[['top', 'right']].set_visible(False)
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+        for container in ax.containers:
+            ax.bar_label(container, label_type='edge', padding=3,
+                         fontsize=10, color='black', fmt='%d')
+
+        plt.legend(['Total Lighting Columns', 'Scheduled for Upgrade'],
+                   fontsize=12, bbox_to_anchor=(1, 1))
+        plt.tight_layout()
+        plt.show()
+
+    # Create and display the bar chart
+    create_bar_chart(Lighting_Column)
 
     # This section will create a table showing the estimated savings per Junction as a result of the Upgraded Lighting Columns
     def create_savings_table(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
