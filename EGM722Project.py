@@ -1,4 +1,4 @@
-# Import required packages
+# Imports the required packages
 import os
 import pandas as pd               # Used for data handling
 import geopandas as gpd           # Core for spatial data operations
@@ -8,7 +8,7 @@ from folium.plugins import MeasureControl  # For measurement tool
 from folium import FeatureGroup, TileLayer  # For layer control and base maps
 
 
-# Load the required Datasets and Convert them to EPSG:4326/WGS84
+#Load the required Shapefiles stored in the data_file file
 def load_geospatial_data() -> tuple:
     """Loads all geospatial datasets from specified file paths.
 
@@ -17,6 +17,7 @@ def load_geospatial_data() -> tuple:
             (MarkerPosts, Filter_Drains, Gully, Junctions,
              Lighting_Column, Boundary)
     """
+    # These are the shapefiles stored in the "data_files" file that we want to display on the map
     MarkerPosts = gpd.read_file('data_files/MarkerPost_100M.shp')
     Filter_Drains = gpd.read_file('data_files/FD_Filter_Drain.shp')
     Gully = gpd.read_file('data_files/GY_Gully.shp')
@@ -26,7 +27,7 @@ def load_geospatial_data() -> tuple:
 
     return MarkerPosts, Filter_Drains, Gully, Junctions, Lighting_Column, Boundary
 
-
+# The shapefiles are in ITM. This will convert them to WGS84 so they can be used with open street map
 def convert_to_wgs84(*gdfs: gpd.GeoDataFrame) -> tuple:
     """Converts GeoDataFrames to WGS84 (EPSG:4326) coordinate system.
 
@@ -38,7 +39,7 @@ def convert_to_wgs84(*gdfs: gpd.GeoDataFrame) -> tuple:
     """
     return [gdf.to_crs("EPSG:4326") for gdf in gdfs]
 
-# Create a Bar Chart for the Lighting Column Data
+# Create a Bar Chart from the Lighting Data showing the number of Lighting Columns Scheduled for Change at each Junction
 
 def create_bar_chart(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
     """Generates a bar chart comparing total vs scheduled lighting column upgrades."""
@@ -85,7 +86,7 @@ if __name__ == "__main__":
     wgs84_data = convert_to_wgs84(*raw_data)
     MarkerPosts, Filter_Drains, Gully, Junctions, Lighting_Column, Boundary = wgs84_data
 
-    # Create and display bar chart
+    # Create and display the bar chart
     create_bar_chart(Lighting_Column)
 
     # Create base map that zooms into Junction 5 - The first junction that works are scheduled for.
@@ -95,10 +96,10 @@ if __name__ == "__main__":
         tiles="Esri.WorldImagery"
     )
 
-    # Add OpenStreetMap as additional base layer. The basemaps can be changed
+    # Add OpenStreetMap as an additional base layer. The basemaps can be changed
     TileLayer('OpenStreetMap', name='OpenStreetMap').add_to(m)
 
-    # Add Boundary polygon
+    # Add the Boundary polygon
     Boundary.explore(
         m=m,
         color='red',
@@ -106,7 +107,7 @@ if __name__ == "__main__":
         name='MMaRC_B_Boundary'
     )
 
-    # Add Gully points
+    # Add the Gully points
     Gully.explore(
         m=m,
         marker_kwds={
@@ -120,7 +121,7 @@ if __name__ == "__main__":
         name='Gully'
     )
 
-    # Add Filter Drains lines
+    # Add the Filter Drains lines
     Filter_Drains.explore(
         m=m,
         color='blue',
@@ -128,7 +129,7 @@ if __name__ == "__main__":
         name='Filter Drains'
     )
 
-    # Add Junctions and Junction Labels
+    # Add the Junctions and Junction Labels
     for idx, row in Junctions.iterrows():
         if not row.geometry.is_empty and pd.notnull(row['Junction_N']):
             folium.Marker(
@@ -157,7 +158,7 @@ if __name__ == "__main__":
                 icon_size=(0, 0)
             ).add_to(m)
 
-    # Add Lighting Columns
+    # Add the Lighting Columns
     Lighting_Column.explore(
         m=m,
         column='ScheduledF',
@@ -168,7 +169,7 @@ if __name__ == "__main__":
         name='Lighting Columns'
     )
 
-    # Add Marker Posts
+    # Add the Marker Posts
     MarkerPosts.explore(
         m=m,
         color='red',
@@ -272,7 +273,7 @@ if __name__ == "__main__":
     """
     m.get_root().html.add_child(folium.Element(legend_html))
 
-    # Add labels for Lighting Columns
+    # Add the labels for Lighting Columns
     for idx, row in Lighting_Column.iterrows():
         if not row.geometry.is_empty and pd.notnull(row['Unique_Ass']):
             label_color = 'green' if row['ScheduledF'] == 'Yes' else 'orange'
@@ -291,7 +292,7 @@ if __name__ == "__main__":
                 icon_size=(0, 0)
             ).add_to(m)
 
-    # Add Marker Post labels
+    # Add the Marker Post labels
     for idx, row in MarkerPosts.iterrows():
         if not row.geometry.is_empty and pd.notnull(row['mVal']):
             label = folium.DivIcon(
@@ -308,7 +309,7 @@ if __name__ == "__main__":
                 icon_size=(0, 0)
             ).add_to(m)
 
-    # Add Gully labels
+    # Add the Gully labels
     for idx, row in Gully.iterrows():
         if not row.geometry.is_empty and pd.notnull(row['Unique_Ass']):
             label = folium.DivIcon(
@@ -325,7 +326,7 @@ if __name__ == "__main__":
                 icon_size=(0, 0)
             ).add_to(m)
 
-    # Add Filter Drains labels
+    # Add the Filter Drains labels
     for idx, row in Filter_Drains.iterrows():
         if not row.geometry.is_empty and pd.notnull(row['Unique_Ass']):
             centroid = row.geometry.centroid
@@ -343,7 +344,7 @@ if __name__ == "__main__":
                 icon_size=(0, 0)
             ).add_to(m)
 
-    # Add distance tool to the map. This will allow the user to measure distances between the different assets.
+    # Add a distance tool to the map. This will allow the user to measure distances between the different assets.
     MeasureControl(position="bottomleft", primary_length_unit="meters").add_to(m)
     folium.LayerControl().add_to(m)
 
@@ -353,11 +354,12 @@ if __name__ == "__main__":
     webbrowser.open("M20_Lighting_Columns_and_Drainage_Assets.html")
 
 
+    # This section will create a table showing the estimated savings per Junction as a result of the Upgraded Lighting Columns
     def create_savings_table(lighting_data: gpd.GeoDataFrame, top_n: int = 10) -> None:
         """Generates the Lighting Column Upgrade Projected Savings table."""
-        # Constants for savings calculation
-        SAVINGS_PER_LAMP_PER_HOUR = 0.15  # cents
-        HOURS_PER_DAY = 8
+        # Savings calculation
+        SAVINGS_PER_LAMP_PER_HOUR = 0.15  # Separate analysis indicates a 15 cent saving per hour of use
+        HOURS_PER_DAY = 8 # Lamps are set to run for 8 hours per day
         DAYS_PER_YEAR = 365
 
         # Process data and calculate savings
@@ -366,7 +368,7 @@ if __name__ == "__main__":
             Lamps_to_Change=('ScheduledF', lambda x: (x == 'Yes').sum())
         ).reset_index().sort_values('Lamps_to_Change', ascending=False)
 
-        # Calculate annual savings in euros
+        # Calculate annual savings
         junction_counts['Annual_Savings'] = (
                 junction_counts['Lamps_to_Change'] *
                 SAVINGS_PER_LAMP_PER_HOUR *
@@ -382,14 +384,14 @@ if __name__ == "__main__":
         fig, ax = plt.subplots(figsize=(12, 4))
         ax.axis('off')  # Hide axes
 
-        # To create the table
+        # Create the table
         table = plt.table(
             cellText=table_data.values,
             colLabels=['Junction', 'No. of Upgraded Lighting_Columns', 'Annual Savings'],
             colColours=['#f0f0f0', '#f0f0f0', '#f0f0f0'],
             cellLoc='center',
             loc='center',
-            bbox=[0, 0, 1, 1]  # Fill available space
+            bbox=[0, 0, 1, 1]
         )
 
         # Style table
