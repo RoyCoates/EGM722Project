@@ -1,4 +1,4 @@
-# EGM722Project - M20 Lighting Column & Drainage Assets
+# EGM722Project - Lighting Column Upgrades and Drainage Asset Cleaning on the M20 Motorway, Ireland
 
 In order to run the Python code, there are a number of steps that need to be followed. Please complete these in the order as set out below.
 
