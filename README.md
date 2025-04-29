@@ -1,27 +1,31 @@
-# EGM722Project - M20 Lighting Column & Drainage Assets
+# EGM722Project - Lighting Column Upgrades and Drainage Asset Cleaning on the M20 Motorway, Ireland
 
+In order to run the Python code, there are a number of steps that need to be followed. Please complete these in the order as set out below.
 
-## 1. Getting started
+## 1. To Start
 
-To get started with the exercises, you'll need to install both `git` and `conda` on your computer. You can follow the instructions for installing git from [here](https://git-scm.com/downloads), 
+In order to run the Python code , you'll need to install both `git` and `Anaconda` on your computer. . The link and instructions for installing git can be found [here](https://git-scm.com/downloads), 
 and Anaconda from [here](https://docs.anaconda.com/anaconda/install/). 
 
-## 2. Download/clone this repository
+## 2. Download/Clone this repository
 
-Once you have these installed, __clone__ this repository to your computer by doing one of the following things:
-
-1. Open GitHub Desktop and select __File__ > __Clone Repository__. Select the __URL__ tab, then enter the URL for this 
-   repository.
-2. Open __Git Bash__ (from the __Start__ menu), then navigate to your folder for this module.
-   Now, execute the following command: `git clone https://github.com/RoyCoates/EGM722Project.git`. You should see some messages
-   about downloading/unpacking files, and the repository should be set up.
+Once you have the two items above installed, you can __clone__ this repository to your computer:
+   
+   2.1 Open GitHub Desktop and select __File__ > __Clone Repository__. 
+   
+   2.2 Select the __URL__ tab, then enter the URL for this repository which is __https://github,com/RoyCoates/EGMProject__
+   
+   2.3 Open __Git Bash__ (from the __Start__ menu), then navigate to your folder.
+   
+   2.4 Execute the following command: __`git clone https://github.com/RoyCoates/EGM722Project.git`__. 
+   You should see messages relating to downloading/unpacking files, and the repository should be set up.
 
 ## 3. Create a conda environment
 
-Once you have successfully cloned the repository, you now have to create a `conda` environment.
+Once you have successfully cloned the repository, you now must create a `conda` environment.
 
-To do this, use the environment.yml file provided in the repository. If you have Anaconda Navigator installed,
-you can do this by selecting __Import__ from the bottom of the __Environments__ panel. 
+Select the __environment.yml__ file provided in the repository. Using Anaconda Navigator,
+select __Import__ from the bottom of the __Environments__ panel. 
 
 Otherwise, you can open a command prompt (on Windows, you may need to select an Anaconda command prompt). Navigate
 to the folder where you cloned this repository and run the following command:
@@ -30,11 +34,11 @@ to the folder where you cloned this repository and run the following command:
 C:\Users\RoyCoates> conda env create -f environment.yml
 ```
 
-This will take some time but fortunately you only have to do this once.
+This step will only have to be performed once.
 
-## 4. Start Jupyter Lab
+## 4. Start Jupyter Lab 
 
-From Anaconda Navigator, you can launch Jupyter Lab. Make sure that your `EGM722Project` environment is activated.
+From the Anaconda Navigator, you can launch Jupyter Lab. Make sure that your `EGM722Project` environment is activated.
 
 From the command-line, first open a terminal window or an __Anaconda Prompt__, and navigate to the folder where you have
 cloned the repository.
@@ -45,16 +49,16 @@ Next, run Jupyter Lab (`jupyter-lab`),which should launch a web browser window, 
 
 Navigate and select the file `EGM722Project.ipynb` under __"https://github.com/RoyCoates/EGM722Project.git"__ 
 
+__Note:__ The files `EGM722Project.py` & `EGM722Project.ipynb`both run the same code. The `.py file` can be used with PyCharm. The `.ipynb` can be used with Jupyter Lab
+
 ## 5. PyCharm - Download & Set-Up
 
 To view and execute the programme file `EGM722Project.py` that is in the GIT repository. I suggest you download and install PyCharm. PyCharm is an Integrated Development Environment (IDE)
 
-__Note:__ The files `EGM722Project.py` & `EGM722Project.ipynb`both run the same code. The `.py file` can be used with PyCharm. The `.ipynb` can be used with Jupyter Lab
-
 You can download PyCharm [here](https://www.jetbrains.com/pycharm/download/other.html). Select the version for your current operating system (Windows, MacOS, or linux). 
 When installed, open and select __Create New Project__
 
-For __Location__, choose the folder where you cloned the EGN722Project repository
+For __Location__, choose the folder where you cloned the EGM722Project repository
 
 Next, set-up a python interpreter. The conda environment that you have already set-up  can be ised as the interpreter for this project. 
 
