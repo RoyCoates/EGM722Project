@@ -1,4 +1,27 @@
 # EGM722Project - Lighting Column Upgrades and Drainage Asset Cleaning on the M20 Motorway, Ireland
+In this scenario, Colas Joint Venture (CJV) have been tasked with an LED upgrade scheme on the M20. Information on which Lighting Columns require upgrading has been received in Shapefile format. 
+CJV are also planning to utilise the Traffic Management that will be required to complete these upgrades to carry out cleaning and maintenance works on the near-by drainage assets. 
+CJV has existing shapefiles for Gullies and Filter Drains for the M20.
+
+__All Shapefiles required to run the code are stored in the folder `data_file`__
+
+The code has been designed to take the Lighting Point and Drainage asset shapefiles so that it can:
+
+•	Create an interactive map that:
+o	Displays the lighting points and drainage assets on a map
+o	Allows for the basemap to be changed from Open Street Maps to the ESRI World Imagery
+o	Colour code the lighting columns to highlight the ones scheduled for upgrade
+o	Creates Pop-Ups for each asset showing the information stored in their respective shapefiles.
+o	Display a legend of all assets for the user.
+o	Allows for Assets to be switched on and off 
+
+•	Create a chart showing the total number of lighting columns to be changed at each Junction on the M20
+
+•	Perform a cost savings analysis and display the results in a table
+
+•	Allow the user to extract the information from the Lighting Column Shapefile as an excel file.
+
+The code is provided as a JupyterLab file (EGM722Project.ipynb) and as a programme file (EGM722Project.py)
 
 In order to run the Python code, there are a number of steps that need to be followed. Please complete these in the order as set out below.
 
