@@ -3,6 +3,8 @@ In this scenario, Colas Joint Venture (CJV) have been tasked with an LED upgrade
 CJV are also planning to utilise the Traffic Management that will be required to complete these upgrades to carry out cleaning and maintenance works on the near-by drainage assets. 
 CJV has existing shapefiles for Gullies and Filter Drains for the M20.
 
+__Disclamer__ This is a made up scenariofor thi project only
+
 __All Shapefiles required to run the code are stored in the folder `data_file`__
 
 The code has been designed to take the Lighting Point and Drainage asset shapefiles so that it can:
