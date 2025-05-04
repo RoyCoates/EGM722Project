@@ -28,14 +28,14 @@ def load_geospatial_data() -> tuple:
     return MarkerPosts, Filter_Drains, Gully, Junctions, Lighting_Column, Boundary
 
 # The shapefiles are in ITM. This will convert them to WGS84 so they can be used with open street map
-def convert_to_wgs84(*gdfs: gpd.GeoDataFrame) -> tuple:
+def convert_to_wgs84(*gdfs: gpd.GeoDataFrame) -> list:
     """Converts GeoDataFrames to WGS84 (EPSG:4326) coordinate system.
 
     Args:
         *gdfs: Variable number of GeoDataFrames to convert
 
     Returns:
-        tuple: Converted GeoDataFrames in same order as input
+        list: Converted GeoDataFrames in same order as input
     """
     return [gdf.to_crs("EPSG:4326") for gdf in gdfs]
 
